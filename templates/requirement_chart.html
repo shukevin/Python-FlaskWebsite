@@ -1,0 +1,182 @@
+<!--This is the html for requirement table and chart.
+    Form: Keep the form part, so that user can reselect and resubmit in this page.
+    Table: List the top 10 games which match the requirement and display their name,
+             minimum requirement, net rating, and price.
+    Chart: Put the top 10 games into a chart with thier name and net rating.
+-->
+
+<!DOCTYPE html>
+<html>
+    <style>
+        div.ex2 {
+          max-width: 350px;
+          margin: left;
+        }
+        body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      
+      .topnav {
+        overflow: hidden;
+        background-color: #333;
+      }
+      
+      .topnav a {
+        float: left;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+      }
+      
+      .topnav a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+      
+      .topnav a.active {
+        background-color: #4CAF50;
+        color: white;
+      }
+      table {
+  border-collapse: collapse;
+  width: 50%;
+}
+
+th, td {
+  padding: 3px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:hover {background-color:#d8d6d6;}
+div.padleft{
+    padding-left: 20px;
+  }
+      </style>
+<head>
+    <title>Games with Requirement</title>
+</head>
+
+<body>
+    <div class="topnav">
+        <a href="/">Home</a>
+        <a href="/overview/">Overview</a>
+        <a href="/popularity/">Popularity</a>
+        <a href="/medianprice">Median Price</a>
+        <a href="/bestvalue/">Best Value</a>
+        <a href="/ratedr/">Rated R</a>
+        <a class="active" href="/requirements/">Requirements</a>
+      </div>
+      <div class ="padleft">
+        <h3>Game Title Requirements</h3>
+    <form>
+        <p>
+            Language:
+            <select name="english">
+                <option value="0">Other Languages</option>
+                <option value="1">English</option>
+            </select>
+        </p>
+
+        <p>
+            Genres:
+            <select name="genres">
+                <option value="Accounting">Accounting</option>
+                <option value="Action">Action</option>
+                <option value="Adventure">Adventure</option>
+                <option value="Animation & Modeling">Animation & Modeling</option>
+                <option value="Audio Production">Audio Production</option>
+                <option value="Casual">Casual</option>
+                <option value="Design & Illustration">Design & Illustration</option>
+                <option value="Early Access">Early Access</option>
+                <option value="Education">Education</option>
+                <option value="Free to Play">Free to Play</option>
+                <option value="Game Development">Game Development</option>
+                <option value="Gore">Gore</option>
+                <option value="Indie">Indie</option>
+                <option value="Massively Multiplayer">Massively Multiplayer</option>
+                <option value="Nudity">Nudity</option>
+                <option value="Photo Editing">Photo Editing</option>
+                <option value="Racing">Racing</option>
+                <option value="RPG">RPG</option>
+                <option value="Sexual Content">Sexual Content</option>
+                <option value="Simulation">Simulation</option>
+                <option value="Software Training">Software Training</option>
+                <option value="Sports">Sports</option>
+                <option value="Strategy">Strategy</option>
+                <option value="Utilities">Utilities</option>
+                <option value="Video Production">Video Production</option>
+                <option value="Violent">Violent</option>
+                <option value="Web Publishing">Web Publishing</option>
+            </select>
+        </p>
+
+        <p>
+            Platform:
+            <select name="platforms">
+                <option value="windows">Windows</option>
+                <option value="mac">Mac</option>
+                <option value="linux">Linux</option>
+            </select>
+        </p>
+
+        <p><input type="submit"></p>
+    </form>
+
+    <h3>Table</h3>
+
+    <table border="1" cellpadding="3">
+        <tr>
+            <th>Name</th>
+            <th>Minimum Requirement</th>
+            <th>Net Rating</th>
+            <th>Price</th>
+        </tr>
+
+        {%for row in cur%}
+        <tr>
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+            <td>{{row[2]}}</td>
+            <td>{{row[3]}}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+    {% set row_class = cycler("#fff100","#ff8c00","#e81123","#ec008c","#68217a","#00188f","#00bcf2","#00b294","#009e49","#bad80a") %}
+    <h3>Chart</h3>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['bar'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+                ["Game", "Net rating", { role: "style" }],
+            {% for row in cur %} 
+                ["{{row[0]}}", {{row[2]}}, "{{row_class.next()}}"],
+            {% endfor %}
+            ]);
+
+            var options = {
+                chart: {
+                title: 'Games and Net rating with given requirement',
+                }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+            chart.draw(data, google.charts.Bar.convertOptions(options));
+        }
+    </script>
+
+    <div id="columnchart_material" style="width: 900px; height: 300px;"></div>
+      </div>
+</body>
+
+</html>

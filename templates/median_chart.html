@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<style>
+  div.ex2 {
+    max-width: 350px;
+    margin: left;
+  }
+  div.padleft{
+    padding-left: 20px;
+  }
+  body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+table {
+  border-collapse: collapse;
+  width: 50%;
+}
+
+th, td {
+  padding: 3px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tr:hover {background-color:#d8d6d6;}
+
+</style>
+
+<head>
+  <title>Developer Pricing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    $(function () {
+      $("#slider-range").slider({
+        range: true,
+        min: 0,
+        max: 200,
+        values: [{{ lowval }}, {{ highval }} ],
+      slide: function (event, ui) {
+        $("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
+      }
+      });
+    $("#amount").val("$" + $("#slider-range").slider("values", 0) +
+      " - $" + $("#slider-range").slider("values", 1));
+    } );
+
+  </script>
+</head>
+
+  <div class="topnav">
+    <a href="/">Home</a>
+    <a href="/overview/">Overview</a>
+    <a href="/popularity/">Popularity</a>
+    <a class="active" href="/medianprice">Median Price</a>
+    <a href="/bestvalue/">Best Value</a>
+    <a href="/ratedr/">Rated R</a>
+    <a href="/requirements/">Requirements</a>
+  </div>
+<body>
+<div class ="padleft">
+
+  <h3>Game Developer's Median Pricing</h3>
+
+  <form>
+    <p>
+      <label for="amount">Median Price Range:</label>
+      <input type="text" id="amount" color="whitesmoke" readonly style="border:0; color:black; font-weight:bold;" name="sliderval">
+    </p>
+    <div class="ex2" div id="slider-range"></div>
+    <p>Order Prices by:</p>
+    <input type="radio" asc="male" name="magnitude" value=ASC>
+    <label for="asc">Lowest</label><br>
+    <input type="radio" desc="female" name="magnitude" value="DESC">
+    <label for="desc">Highest</label><br>
+    <p><input type="submit" value="Submit"></p>
+  </form>
+
+  <h3>Developers with the {{hlTag}} Median Game Pricing</h3>
+
+  <table border="1" cellpadding="3">
+    <tr>
+      <th>Developer</th>
+      <th>Median Price (USD)</th>
+      <th>Average Price (USD)</th>
+      <th>Most Expensive(USD)</th>
+    </tr>
+
+    {% for row in datas %}
+    <tr>
+      <td>{{row[0]}}</td>
+      <td>{{row[2]}}</td>
+      <td>{{row[1]}}</td>
+      <td>{{row[3]}}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% if datas|length %}
+  {% set row_class = cycler("#fff100","#ff8c00","#e81123","#ec008c","#68217a","#00188f","#00bcf2","#00b294","#009e49","#bad80a") %}
+  <h3>Chart</h3>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load("current", { packages: ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart1);
+    google.charts.setOnLoadCallback(drawChart2);
+    function drawChart1() {
+      var data = google.visualization.arrayToDataTable([
+        ["Developer", "Price in USD", { role: "style" }],
+        {% for row in datas %}
+    ["{{row[0]}}", {{ row[2]}}, "{{row_class.next()}}"],
+      {% endfor %}
+      ]);
+
+    var view = new google.visualization.DataView(data);
+    view.setColumns([0, 1,
+      {
+        calc: "stringify",
+        sourceColumn: 1,
+        type: "string",
+        role: "annotation"
+      },
+      2]);
+
+    var options = {
+      title: "Developers Median Game Price ",
+      width: 600,
+      height: 400,
+      bar: { groupWidth: "95%" },
+      legend: { position: "none" },
+    };
+    var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values1"));
+    chart.draw(view, options);
+  }
+    function drawChart2() {
+      var data = google.visualization.arrayToDataTable([
+        ["Developer", "Price in USD", { role: "style" }],
+        {% for row in datas %}
+    ["{{row[0]}}", {{ row[1]}}, "{{row_class.next()}}"],
+      {% endfor %}
+      ]);
+
+    var view = new google.visualization.DataView(data);
+    view.setColumns([0, 1,
+      {
+        calc: "stringify",
+        sourceColumn: 1,
+        type: "string",
+        role: "annotation"
+      },
+      2]);
+
+    var options = {
+      title: "Developers Average Game Price ",
+      width: 600,
+      height: 400,
+      bar: { groupWidth: "95%" },
+      legend: { position: "none" },
+    };
+    var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values2"));
+    chart.draw(view, options);
+  }
+  </script>
+  <table class="columns">
+    <tr>
+      <td>
+        <div id="columnchart_values1" style="width: 600px; height: 400px;"></div>
+      </td>
+      <td>
+        <div id="columnchart_values2" style="width: 500px; height: 400px;"></div>
+      </td>
+    </tr>
+  </table>
+  {% endif %}
+</body>
+</div>
+</html>

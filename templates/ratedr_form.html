@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <style>
+  div.ex2 {
+    max-width: 350px;
+    margin: left;
+  }
+  body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+div.padleft{
+    padding-left: 20px;
+  }
+</style>
+<title>Steam</title>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<head>
+  
+</head>
+<body>
+    <div class="topnav">
+        <a href="/">Home</a>
+        <a href="/overview/">Overview</a>
+        <a href="/popularity/">Popularity</a>
+        <a href="/medianprice">Median Price</a>
+        <a href="/bestvalue/">Best Value</a>
+        <a class="active" href="/ratedr/">Rated R</a>
+        <a href="/requirements/">Requirements</a>
+      </div>
+      <div class ="padleft">
+        <h3>Top Rated R Titles</h3>
+        <form>
+          <p>Input minimum number of ratings</p>
+          <input type="text" id="amount" color="whitesmoke" readonly style="border:0; color:black; font-weight:bold;" name="sliderval">
+          <div class="ex2" div id="slider-range"></div>
+          <input name = "positive_ratings" value ="{{ positive_ratings }}">
+          <input type = "submit"> 
+      </form>
+<h3>Displays all Rated R games that have ratings above input value.</h3>
+
+</div>
+</body>
+</html> 
